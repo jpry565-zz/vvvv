@@ -1,0 +1,93 @@
+FileList.txt
+============
+List of files used in the front-end, with descriptions.
+
+about.php: Displays a user-configurable "About" page.  The bulk of the content for this page is
+    stored in the file "lib/staticContent/about.html".
+browse.php: Allows users to browse the collection.  Internally, browsing is nothing more than searching
+    the collection with fixed search parameters, and with a different interface.
+createAccount.php: Used to allow unregistered users to create an account.
+createEditModule.php: Not used, will be removed.  Origionally was used to handle all aspects of 
+    creating and editing modules.  These tasks have now been moved into the files in the 
+    "moduleWizard/" subdirectory.
+createModule.php: Not used, will be removed.  Origionally was used to handle initial module creation.
+    This task has been moved to the "moduleWizard/basicModuleInformation.php" and 
+    "moduleWizard/welcome.php" files.
+forgotPassword.php: Allows users to recover forgotten passwords by either sending their password to
+    their email address or by resetting their password and sending them the new password.
+index.php: Displays a home page for the collection.  The bulk of the content for thsi page is
+    stored in the file "lib/staticContent/home.html".
+loginLogout.php: Handles logging users in and voluntarly logging a user out.
+moderate.php: Allows Editors and Administrators to moderate modules in the system which are pending
+    moderation, such as approving or denying such modules.
+moduleManagement.php: Allows Editors and Administrators to manage all aspects (except approving or denying
+    moderation requests) of all modules in the system.  The master module management page.
+rate.php: Allows users to leave ratings/comments for modules and materials.
+search.php: Handles searching modules, displaying search results, and displaying an "Advanced Search" form.
+showMyModules.php: Shows modules belonging to the logged in user, along with basic management tools for those
+    modules.  A "module management" tool for a user's own modules.
+userManageAccount.php: Allows a user to manage their own account, and no one else's.
+userManagement.php: Allows administrators to manage all aspects of all users on the system.  A "master user
+    management" console.
+viewModule.php: The standard module viewer.  Handles viewing of modules, as well as access restrictions.
+
+lib/frontend-ui.php: Contains functions used throughout the user interface of the system.  Not intended to be
+    accessed directly by users.
+lib/moduleEditUploadHelpers.php: Contains functions used throughout the module upload/submission/edit process.
+    Not intended to be accessed directly by users/
+
+lib/backends/backend.php: Imported by all files which require any back-end storage features.  Selects the
+    back-end used by the system.
+
+lib/look/look.php: Imported by all files which require any skinning.  Selects the theme/look of the system.
+
+lib/staticContent/about.html: Contains static HTML which makes up the "About" page body.  Used by about.php.
+lib/staticContent/home.html: Contains static HTML which makes up the "Home" page body.  Used by index.php.
+
+lib/tiny_mce/*: Files for the TinyMCE editor (LGPL, from tinymce.moxiecode.com, not modified by this system)
+
+configureCollection/index.php:  The main configuration panel, with links to various configuration aspects of the system.
+configureCollection/configureCategories.php:  Allows viewing, adding, and removing categories used in the collection.
+configureCollection/editStaticPages.php:  Allows editing and saving the static content pages in the lib/staticContent
+    directory.  Uses the TinyMCE editor to imporve interface, and is designed to be called from the
+    configureCollection/index.php file.
+
+moduleWizard/basicModuleInformation.php: Allows users to input basic module information.  Also responsible for
+    creating new, initially empty modules and new versions of modules.  The second page of the Module Submission
+    Wizard.
+moduleWizard/crossReferences.php: Allows users to build cross-references and external references between modules
+    and other sources.
+moduleWizard/delete.php: Deletes a module from the system, and all materials exclusively used by that module.
+    Also provides a confirmation page.  Restricts deletion to only a user's own, non-active modules, except
+    for Editors and Administrators.
+moduleWizard/final.php: The final stage of the Module Submission Wizard before final submission.  Collects
+    comments and the minimum user type which may access the module.
+moduleWizard/materials.php: Allows the creation of materials and attatches them to modules.  Step 4 of the 
+    Module Submission Wizard.
+moduleWizard/prereqsTopicsObjectives.php: Displays and allows editing and creation of new prereqs, topics, and
+    objectives for a module.  Step 3 of the Module Submission Wizard.
+moduleWizard/save.php: Saves all progress of a module, and ends the Module Submission Wizard.  Note that this
+    file should only be used if the action desired is to save progress AND end the wizard.  For saving progess
+    only, used the functions in lib/moduleEditUploadHelpers.php.
+moduleWizard/submit.php: Collects final information necessary to submit/publish a module, and either 
+    publishes a module or submits it for moderation.  The absolute final stage of the Module Submission Wizard.
+moduleWizard/welcome.php: The first page of the Module Submission Wizard.  Introduces the submission process,
+    collects a module title if needed (for new modules), and determines the proper action to take regarding module
+    creation (edit, create entirely new, or create new version).
+
+oaiProvider/index.php: A home page for the OAI-PMH provider.  Contains information on the provider.  Mostly static.
+oaiProvider/provider.php: The file accessed by OAI-PMH harvesters.  Actually serves OAI-PMH harvest requests.  Depends
+    on the files in the oaiProvider/lib directory to function.
+
+oaiProvider/lib/badArgument.php: Functions for handling bad arguments passed to the OAI-PMH provider.
+oaiProvider/lib/config.php: Basic configuration for the OAI-PMH provider.
+oaiProvider/lib/dateFunctions.php: Functions used for date handling within the OAI-PMH provider.
+oaiProvider/lib/getRecord.php: Functions used to process "GetRecord" requests to the OAI-PMH provider.
+oaiProvider/lib/helpers.php: Functions used throughout the OAI-PMH provider.
+oaiProvider/lib/identify.php: Functions used to handle "Identify" requests to the OAI-PMH provider.
+oaiProvider/lib/index.html: Garbage, not used.  Will be removed.
+oaiProvider/lib/listIdentifiers.php: Functions used to handle "ListIdentifiers" requests to the OAI-PMH
+    provider.
+oaiProvider/lib/listMetadataFormats.php: Functions used to handle "ListMetadataFormats" requests to the
+    OAI-PMH provider.
+oaiProvider/listRecords.php: Functions used to handle "ListRecords" requests to the OAI-PMH provider.

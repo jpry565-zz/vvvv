@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>OAI-PMH Provider for SWEnet: Information</title>
+</head>
+<body>
+<h1>OAI-PMH Provider for SWEnet</h1>
+<p>The OAI-PMH Provider for SWEnet serves metadata contained in the SWEnet database to OAI-PMH harvesters.  The provider 
+is written in PHP from scratch by Ethan Greer at Drexel University.  Inquiries about the provider should be directed 
+to:</p>
+<p style="font-style: italic;">elg42 at drexel dot edu</p>
+<h2>Use the Provider</h2>
+<p>Point your OAI-PMH version 2 compliant harvester to:</p>
+<p><a href="provider.php">http://www.xcitegroup.org/oaiProvider/provider.php</a></p>
+<p>to harvest requests from the provider.</p>
+<p>You can also see some basic information about the provider from your browser at:</p>
+<p><a href="provider.php?verb=Identify">http://xcitegroup.org/oaiProvider/provider.php?verb=Identify</a></p>
+<p>and looking at the page source.</p>
+<h2>Notes</h2>
+<ul>
+<li>This provider doesn't support sets or resumption tokens.  This isn't much of an issue currently, given 
+SWEnet's small size.</li>
+<li>This provider passes the OAI Repository Explorer's automated compliance tests.  It is compliant with the OAI-PMH 
+protocal version 2 at least to the extent tested by the Repository Explorer.</li>
+</ul>
+</body>
+</html>

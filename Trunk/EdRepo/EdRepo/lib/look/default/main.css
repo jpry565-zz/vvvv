@@ -1,0 +1,208 @@
+body {
+  background-color: white;
+  font-family: Verdana,Arial,Helvetica,Sans-Serif;
+}
+
+h1 {
+  font-family: Arial;
+  font-size: 1.75em;
+}
+
+#header {
+  width: 100%;
+  text-align: left;
+  font-family: Arial;
+  text-align: center;
+}
+
+#content-body-wrapper {
+    display: table;
+    border-collapse:collapse;
+    width: 100%;
+}
+#content-body {
+    display:table-row;
+    width: 100%;
+}
+
+#left-sidebar {
+  display: table-cell;
+  width: 125px;
+  background-color: #FAAD4F;
+  border-right: 3px black solid;
+}
+
+#right-sidebar {
+  display: none;
+}
+
+#top-nav-bar {
+  width: 100%;
+  text-align: left;
+  background: #FAAD4F;
+  overflow: hidden;
+  font-weight: bold;
+  height: 1.5em;
+  border-bottom: 1px black solid;
+}
+
+#mainContentArea {
+  display: table-cell;
+  /*width: 80%;*/
+  padding-left: 6px;
+  padding-bottom: 20px;
+  background-color: white;
+
+}
+
+#mainContentAreaTopInfoBar {
+  padding: 0px 0px 0px 0px;
+  width: 100%;
+  background-color: #E9FFB0;
+  font-size: small;
+  width: 100%;
+  margin: 0px 0px 0px 0px;
+}
+
+#footer {
+  padding-top: 6px;
+  clear: both;
+  width: 100%;
+  background-color: #FFD684;
+  font-size: small;
+  text-align: center;
+}
+
+.userInformationView { /* This class is used for tables which contain information about users. */
+  border-collapse: collapse;
+  border: 2px black solid;
+}
+
+.userInformationView tr, td {
+  background: #eeeeee;
+  border: 1px black solid;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.userInformationViewCategory {
+  background: #dddddd;
+  font-weight: bold;
+}
+
+/* NOTE WARNING TODO
+   -----------------
+   The .moduleInformationView classes in the PHP code need to be migrated to ML classes (see below).  Once this is done, these classes will
+   be removed from this CSS.  Please do not use the moduleInformationView classes in new PHP/HTML, use the ML classes instead. */
+/*.moduleInformationView {
+  border-collapse: collapse;
+  border: 1px black solid;
+}
+
+.moduleInformationView tr, td {
+  padding-left: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-right: 5px;
+} */
+
+.error {
+  color: red;
+}
+
+.warning {
+  font-weight: bold;
+  font-size: larger;
+  color: #ff3333;
+}
+
+.note {
+  font-weight: bold;
+  color: #ff4444;
+}
+
+.viewerMenu, .superViewerMenu, .submitterMenu, .editorMenu, .adminMenu {
+  border: 1px black solid;
+  background: #ccccff;
+}
+
+/* ML stands for Module List.  ML classes are used whenever a list of modules is displayed. */
+.ML {
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+tr.ML, td.ML {
+  border: 1px solid black;
+  padding: 3px 3px 3px 3px;
+}
+
+.MLHeader {
+  font-weight: bold;
+  text-align: center;
+  background-color: #bbbbbb;
+}
+
+/* MIEV stands for Module Information Edit View, which is the various parts of the view users see when editing modules. */
+.MIEV {
+  border-collapse: collapse;
+  border: 2px solid black;
+  width: 90%;
+}
+.MIEV tr, td {
+  border: 2px solid black;
+  padding: 5px 5px 5px 5px;
+}
+.MIEV textarea {
+  width: 95%;
+  height: 95%;
+}
+.MIEV input {
+  width: 90%;
+}
+.MIEVCategoryCell {
+  width: 25%;
+}
+.MIEVDescriptiveText {
+  font-size: smaller;
+}
+.MIEVCategoryText {
+  font-weight: bold;
+  font-size: larger;
+}
+
+/* MIV stands for Module Information View, which is the various parts of the view seen when viewing a module (not editing it). */
+.MIV {
+  border-collapse: collapse;
+  border: 1px black solid;
+  width: 90%;
+  background-color: white;
+}
+.MIV tr, td {
+  border: 1px black solid;
+  padding: 3px 3px 3px 3px;
+  background-color: white;
+}
+.MIVCategory {
+  width: 15%;
+  background-color: #DAFFAD;
+  font-weight: bold;
+}
+.MIVSectionHeader {
+  font-size: x-large;
+  font-weight: bold;
+}
+.MIVSubSection {
+  font-weight: bold;
+}
+
+.subblock {
+  border: 1px black dashed;
+}
+
+.subblockHeader {
+  font-weight: bold;
+  font-size: larger;
+}

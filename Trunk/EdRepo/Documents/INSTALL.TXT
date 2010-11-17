@@ -1,0 +1,210 @@
+EdRepo Installation Instructions
+--------------------------------
+
+This is a brief guide to installing EdRepo.
+
+===========================================
+
+A.  System Requirements
+    -------------------
+  A base EdRepo installation requires only PHP and a webserver capable of executing PHP 5.  It was been tested in Fedora Linux 13 (x86) and 
+  Mandriva Linux 2010 and 2010.1 (Spring) (x86_64) running with the Apache HTTPD webserver and PHP 5.  EdRepo may run with PHP versions other than 
+  version 5, but such configurations have not been tested and are completely unsupported.
+  
+  In addition to stock PHP 5, EdRepo requires the PHP "finfo" functions, which may be bundled separately from your PHP install.  Fedora Linux is known 
+  to require the installation of the "php-finfo" package in addition to the base PHP packages for this feature.
+  
+  Each EdRepo backend has its own individual requirements in addition to the base EdRepo requirements.  Consult the documentation for the backend you 
+  wish to use for any additional requirements the backend requires.  The default MySQL backend shipped with EdRepo requires, in addition to the base 
+  EdRepo requirements, a working MySQL server and the MySQL PHP functions.  The MySQL backend has been tested in Fedora Linux 13 (x86) and Mandriva 
+  Linux 2010 and 2010.1 (Spring) (x86_64).  Note that on Mandriva Linux, you may have to install the "php-mysql" package in addition to the base 
+  PHP packages for the MySQL EdRepo backend to function properly.
+
+
+B.  Installing Base EdRepo Components
+    ---------------------------------
+  1.  Extract the EdRepo archive to a temporary directory.  This will create a directory "edrepo-version" where "version" is the version of EdRepo 
+      you are installing.  Within this directory are several subdirectories and files.
+  2.  Copy the "edrepo" subdirectory you extracted ("edrepo-version/edrepo") to the directory you wish to install EdRepo into.  This directory must 
+      be accessible by your webserver and in your server root.  For example, on Linux systems running the Apache HTTPD webserver, you might copy  
+      "edrepo" subdirectory to:
+        /var/www/html
+  3.  If you wish, you may now rename the "edrepo" directory you created in your webserver root.  Do not modify its contents at this time, however.
+      This directory is known as the "base EdRepo install directory."
+  3.  By default, EdRepo is configured to use the MySQL storage backend, which requires additional configuration to work (see part C).  To install/use 
+      a different backend, see part C below.
+
+
+C.  Installing a Storage Backend
+    ----------------------------
+  1.  By default, EdRepo uses the MySQL storage backend, which is shipped with the base EdRepo package.  The MySQL backend is a full-featured backend 
+      suitable for a wide variety of collections.  If you wish to use this backend, follow the following steps and then skip to part D (Configuring 
+      EdRepo).  If you wish to install/use a different backend, jump to step 2.
+    1.1.  Create a new user in your MySQL database for EdRepo.  The following MySQL command will do this:
+            CREATE USER 'edrepo'@'localhost' IDENTIFIED BY 'password';
+           Replace "password" above with a suitable password.
+    1.2.  Dump the included "edrepo.sql" database and tables into your MySQL database.  This SQL file will create an initial database suitable for the 
+          MySQL backend with a single administrator user.  The following MySQL command will do this:
+            SOURCE edrepo.sql
+           Replace "edrepo.sql" with the full path to the "edrepo.sql" file found in the "lib/backends/mysql/" directory of your EdRepo install.
+    1.3.  Grant all privileges to the user you created in step 1.1 to the "edrepo" database created in step 1.2.  The following MySQL command will do
+          this:
+            GRANT ALL PRIVILEGES ON edrepo.* TO 'edrepo'@'localhost';
+    1.4.  Edit the MySQL backend specific configuration file "settings.php" located in the "lib/backends/mysql" directory of your EdRepo install to 
+          reflect your database.  In particular, on the line:
+            $DB_PASSWORD="password";
+          replace "password" with the password you set in step 1.1.  Unless you have changed the default MySQL user/database created in steps 1.1-1.3, 
+          you should not have to configure any other settings in this file.  If you did change the user/database created above, make the necessary 
+          changes to the "settings.php" file now.
+    1.5.  The above setup will create an initial EdRepo administrator user with a login email of "admin@admin" and a password of "admin".  You should 
+          initially log into EdRepo using this account and either modify it or create a new administrator account and delete this initial account.
+    1.6.  If you intend to use the MySQL storage backend, you may no skip to part D, "Configuring EdRepo" below.
+    
+  2.  To install a new backend, create a new directory in the "lib/backends/" directory of the EdRepo install directory and put all files for the new 
+      backend in the new directory.  Most backends are shipped as a ready-to-go archive, so you can usually just extract the archive of the 
+      new backend into the "lib/backends/" directory of the EdRepo install directory.
+  3.  To activate the new backend, edit the "lib/backends/backend.php" file and change the line:
+        require("mysql/datamanager.php");
+      to
+        require("<backenddir>/datamanager.php");
+      where "<backenddir>" is the directory containing the new backend.
+  4.  Consult the new backend's documentation for any additional setup or configuration steps specific to the new backend.
+
+
+D.  Configuring EdRepo
+    -------------------
+  This version of EdRepo stores its non-backend-specific configuration settings in the "config.php" file located in the "lib/config/" subdirectory of 
+  the base EdRepo install directory, and one parameter for exporting metadata in OAI-PMH format in the "config.php" file located in the 
+  "oaiProvider/lib" subdirectory of the base EdRepo install.  The options in these configuration files are listed below.
+  
+  *WARNING:  These configuration files may contain options, settings, and lines not mentioned in this install guide.  Do not make any modifications 
+  to lines/options/settings not mentioned below.
+  
+  Settings in "lib/config/config.php":
+  
+    $COLLECTION_NAME : Set to the name of your EdRepo collection.  Example:
+      $COLLECTION_NAME="EdRepo Test Collection: All About Pumpkins";
+    
+    $COLLECTION_SHORTNAME : Set to a "short name" for your collection.  This is normally the name specific in the $COLLECTION_NAME setting, but 
+        without any spaces or puncuation.  Example:
+      $COLLECTION_SHORTNAME="EdRepoTestCollection";
+  
+    $COLLECTION_BASE_URL : The base URL to the directory you installed EdRepo into.  This should be set to the path component of the URL users 
+        go to in their web browser to access your collection's homepage.  Example:
+      $COLLECTION_BASE_URL="/edrepo/";
+    
+    $NEW_ACCOUNTS_REQUIRE_APPROVAL : If set to TRUE, accounts created by new users will be disabled until an administrator enables them.  If set to 
+        FALSE, new accounts created through EdRepo's web interface will be made active immediately.  Example:
+      $NEW_ACCOUNTS_REQUIRE_APPROVAL=TRUE;
+    
+    $NEW_ACCOUNTS_ACCOUNT_TYPE="Viewer" : The account type new accounts are set to by default.  This should be one of the following:
+        "Viewer", "SuperViewer", "Submitter", "Editor", or "Admin".  Example:
+      $NEW_ACCOUNTS_ACCOUNT_TYPE="Viewer";
+      
+    $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL : If set to TRUE, than an email will be sent to specified user(s) whenever a new account is created 
+        which is pending approval.  Has no affect if $NEW_ACCOUNTS_REQUIRE_APPROVAL is set to FALSE.  Example:
+      $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL=FALSE;
+      
+    $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL_CLASS : Lists all classes of users to send emails to when a new user is pending approval.  Has no 
+        affect if $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION or $NEW_ACCOUNTS_REQUIRE_APPROVAL are set to FALSE.  Otherwise, when a new account 
+        is created and is pending approval, all users of the class(es) specified are sent alerts that a new user is pending approval.  Example:
+          $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL=array("Admin");
+
+    $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL_LIST : Lists individual email address(es) to send emails to when a new user is pending approval.  
+        Has no affect if $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION or $NEW_ACCOUNTS_REQUIRE_APPROVAL are set to FALSE.  Otherwise, when a new 
+        account is created and is pending approval, all email addresses listed are sent alerts that a new user is pending approval.  Example:
+          $EMAIL_MODERATORS_ON_NEW_USERS_PENDING_APPROVAL_LIST=array("youremail@yourdomain.tld", "anotherperson@theirdomain.tld");
+
+    $NEW_MODULES_REQUIRE_MODERATION : If set to TRUE, new modules submitted to EdRepo via the web interface will have to be approved by a 
+      moderator (users of class "Editor" or "Admin") before they become active in the collection.  If set to FALSE, modules submitted will become 
+      active immediately.  Example:
+        $NEW_MODULES_REQUIRE_MODERATION=TRUE;
+
+    $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION : If set to TRUE, whenever a new module is submitted to EdRepo and is pending moderation, an 
+      email alert will be sent to specified user(s).  Has no affect if $NEW_MODULES_REQUIRE_MODERATION is set to FALSE.  Example:
+        $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION=FALSE;
+    
+    $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION_CLASS : Lists all classes of users to send emails to when a new module is submitted to EdRepo 
+      which required moderation.  Has no affect if $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION or $NEW_MODULES_REQUIRE_MODERATION are set to 
+      FALSE.  Otherwise, all users of the specified class(es) listed will be sent an email alert when a new module requiring moderation approval is 
+      submitted to the collection.  Example:
+        $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION_CLASS=array("Editor", "Admin");
+    
+    $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION_LIST : Lists individual email address(es) to send emails to when a new module is submitted and 
+      is pending moderation.  Has no affect if $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION or $NEW_MODULES_REQUIRE_MODERATION are set to FALSE.  
+      Otherwise, all email address(es) listed will be sent an alert when new modules requiring moderation are submitted to the collection.  Example:
+        $EMAIL_MODERATORS_ON_NEW_MODULE_PENDING_MODERATION_LIST=array("youremail@yourdomain.tld", "anotherperson@theirdomain.tld");
+
+    $MATERIAL_STORAGE_DIR : Set to the absolute path of the directory on your server to store material files uploaded by users to EdRepo.  Files 
+      uploaded to EdRepo will be stored in this directory, so your webserver must have read/write access to this directory.
+      NOTE: When changing backends, it is suggested that you change or clear this directory, since each backend has a different material naming and 
+      organizational system.
+      Example:
+        $MATERIAL_STORAGE_DIR="/var/www/html/edrepo/lib/materials/";
+  
+  
+  Settings in "oaiProvider/lib/config.php":
+    
+    $EARLIEST_DATESTAMP : Set to the date/time of the earliest record in your EdRepo collection, in YYYY-MM-DDThh:mm:ssZ format.  Example:
+      $EARLIEST_DATESTAMP="2010-07-21T18:05:12Z";
+
+
+E.  Skinning EdRepo (Changing EdRepo's Visual Look)
+    -----------------------------------------------
+  EdRepo is mostly-fully-themeable.  To create a new theme, create a new subdirectory in the "lib/look" subdirectory of your base EdRepo install 
+  and copy all the files from the "lib/look/default" subdirectory into your new directory.  You can now edit these files to create a new theme 
+  for EdRepo (a description of each required file in your theme is below).
+  
+    failure.png   - An icon displayed when EdRepo encounters an error or failure.
+    footer.html   - A static footer.  The contents of this file will be displayed at the bottom of all EdRepo pages.
+    header.html   - A static header.  The contents of this file will be displayed at the top of all EdRepo pages (but within the HTML <body> tag of the page).
+    main.css      - The main CSS stylesheet for the theme.  This controls how text and pages look in EdRepo.
+    success.png   - An icon displayed when EdRepo successfully completes an operation.
+  
+  You may include other files (such as images) in your theme.  Simply reference them from one or more of the required files above.  Note that you may 
+  need to use absolute URLs when referencing other files which may require you to slightly edit your theme if moving it between EdRepo installs.
+  
+  To make EdRepo switch to your new theme, edit the "lib/look/look.php" file in your base EdRepo install and change the line:
+    $LOOK_DIR="default";
+  to
+    $LOOK_DIR="my_new_directory";
+  where "my_new_directory" is the name of the new subdirectory of "lib/look" you created which contains your new theme.
+
+F.  Troubleshooting
+    ---------------
+  If your EdRepo installation is not working, try the following:
+  
+   * Exporting metadata, viewing, submitting modules, and other date/time-related things to not work, OR you are getting errors about "no timezone set" 
+     and PHP is guessing a timezone:
+        These problems arise because your system's PHP install does not have a default timezone set.  Set the
+          date.timezone
+        parameter in your "php.ini" file to a valid timezone as listed at:
+          http://www.php.net/manual/en/datetime.configuration.php#ini.date.timezone
+          
+   * Can't upload materials:
+        This is most likely caused by your webserver not having read/write permissions to the directory specified in the $MATERIAL_STORAGE_DIR 
+        configuration parameter.  Ensure your webserver has read/write permissions to this directory.
+        In addition, on Fedora Linux or other Linux distributions with SELinux or another security framework installed, ensure SELinux or your 
+        security system allows your webserver to write to the directory.  You may need to re-label the directory.  For example, on Fedora 13,
+        you might need to run the following (as root):
+          chcon -R unconfined_u:object_r:httpd_sys_rw_content_t:s0 /var/www/html/edrepo/lib/materials/
+        (replace "/var/www/html/edrepo/lib/materials/" with the path you configured EdRepo to store materials in).
+        You should also make sure the directory is read/writable by the user your webserver is running as.
+   
+   * Can't edit Home Page, About Page, or other pages from within EdRepo:
+        See the "Can't upload materials" problem above, except the problem is on the "lib/staticContent" directory of the base install directory.
+   
+   * Some material uploads fail, but not all:
+        This is may be caused by your PHP configuration having a minimum upload file size smaller than your EdRepo configuration.  Try 
+        increasing the maximum upload size PHP will accept in your server's php.ini file (the "upload_max_filesize" parameter in php.ini) 
+        and restart your webserver to see if this solves the problem.
+        
+
+G.  Removing EdRepo
+    ---------------
+  If you want to delete your EdRepo installation, simply delete the base EdRepo install directory (the directory you installed EdRepo into).  If 
+  you configured EdRepo to store materials in a directory outside your base EdRepo install directory, delete that directory as well.  If you used 
+  the MySQL storage backend, delete the MySQL database and user created when setting up the backend (most likely database "edrepo" and user 
+  "edrepo@localhost").  That's it.
+  
+  If you used a backend other than the MySQL storage backend, consult the backend's documentation for any additional, backend-specific removal steps.
